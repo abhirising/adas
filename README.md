@@ -23,3 +23,17 @@ python your_script.py
 ### Yolo & Dependencies Installation
   - pip install ultralytics
   - pip install opencv-python numpy
+
+### Flowchart
+```mermaid
+flowchart LR
+    A[Input Image / Camera] --> B[YOLOv8 Detection]
+    B --> C[Vehicle Filtering]
+    C --> D[Lead Vehicle Selection]
+    D --> E[Distance Estimation]
+    E --> F[Relative Speed Calculation]
+    F --> G[TTC Computation]
+    G --> H{Decision}
+    H -->|TTC < 1.5s| I[AEB Brake]
+    H -->|TTC < 3s| J[ACC Slow Down]
+    H -->|Else| K[Safe]
