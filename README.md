@@ -30,9 +30,9 @@ flowchart LR
     A[Input Image / Camera] --> B[Perception]
     B --> C[Situation Interpretation]
     C --> D{Decision}
-subgraph D2[Planning Phase]
-    D1 -->|TTC < 1.5s| E[AEB Brake]
-    D1 -->|TTC < 3s| F[ACC Slow Down]
-    D1 -->|Else| G[Safe]
+subgraph D1[Planning Phase]
+    D -->|TTC < 1.5s| E[AEB Brake]
+    D -->|TTC < 3s| F[ACC Slow Down]
+    D -->|Else| G[Safe]
 end
 
