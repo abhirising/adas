@@ -27,13 +27,10 @@ python your_script.py
 ### Flowchart
 ```mermaid
 flowchart LR
-    A[Input Image / Camera] --> B[YOLOv8 Detection]
-    B --> C[Vehicle Filtering]
-    C --> D[Lead Vehicle Selection]
-    D --> E[Distance Estimation]
-    E --> F[Relative Speed Calculation]
-    F --> G[TTC Computation]
-    G --> H{Decision}
-    H -->|TTC < 1.5s| I[AEB Brake]
-    H -->|TTC < 3s| J[ACC Slow Down]
-    H -->|Else| K[Safe]
+    A[Input Image / Camera] --> B[Perception]
+    B --> C[Situation Interpretation]
+    C --> D{Decision}
+    D -->|TTC < 1.5s| E[AEB Brake]
+    D -->|TTC < 3s| F[ACC Slow Down]
+    D -->|Else| G[Safe]
+
