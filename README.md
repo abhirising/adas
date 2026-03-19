@@ -29,8 +29,10 @@ python your_script.py
 flowchart LR
     A[Input Image / Camera] --> B[Perception]
     B --> C[Situation Interpretation]
-    C --> D{Decision}
-    D -->|TTC < 1.5s| E[AEB Brake]
-    D -->|TTC < 3s| F[ACC Slow Down]
-    D -->|Else| G[Safe]
+    C --> D1{Decision}
+subgraph D[Planning Phase]
+    D1 -->|TTC < 1.5s| E[AEB Brake]
+    D1 -->|TTC < 3s| F[ACC Slow Down]
+    D1 -->|Else| G[Safe]
+end
 
