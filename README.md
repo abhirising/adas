@@ -12,10 +12,14 @@ pip install ultralytics opencv-python
 python your_script.py
 
 ## Env Setup
+### System Setup
+- Ubuntu 20.04.6 LTS
+### Conda Installation
 - Download Miniconda -->         wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-
 - Install -->                  bash Miniconda3-latest-Linux-x86_64.sh
-
 - Restart terminal or run -->   source ~/.bashrc
-
 - Verify -->                 conda --version
+
+### Yolo & Dependencies Installation
+  - pip install ultralytics
+  - pip install opencv-python numpy
