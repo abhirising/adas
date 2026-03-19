@@ -1,4 +1,4 @@
-# ADAS YOLO AEB/ACC Demo
+# ADAS 1V Solutio AEB/ACC Demo
 
 ## Overview
 This project demonstrates:
