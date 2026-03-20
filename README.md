@@ -33,7 +33,7 @@ python your_script.py
 ### Flowchart
 ```mermaid
 flowchart LR
-    A[Input Image / Camera] --> B[Perception]
+    A[Input Image] --> B[Perception]
     B --> C[Situation Interpretation]
     C --> D{Decision}
 subgraph D1[Decision & Planning Phase]
