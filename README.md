@@ -11,6 +11,9 @@ This project demonstrates:
 pip install ultralytics opencv-python
 python your_script.py
 
+## Results
+<img width="612" height="221" alt="image" src="https://github.com/user-attachments/assets/d83537dd-ff7c-4f24-ad55-6caca3c4b39c" />
+
 ## Env Setup
 ### System Setup
 - Ubuntu 20.04.6 LTS
@@ -35,4 +38,6 @@ subgraph D1[Decision & Planning Phase]
     D -->|TTC < 3s| F[ACC Slow Down]
     D -->|Else| G[Safe]
 end
+
+
 
