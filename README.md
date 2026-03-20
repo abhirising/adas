@@ -2,7 +2,7 @@
 
 ## Overview
 This project demonstrates:
-- YOLOv8 object detection
+- YOLOv8 object detection : Currently the model can detect 80 types of objects, with detection time = 4.9 ms
 - Distance estimation using bounding boxes
 - Time-to-Collision (TTC)
 - AEB and ACC decision logic
