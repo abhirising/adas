@@ -9,7 +9,7 @@ This project demonstrates:
 
 ## Run
 pip install ultralytics opencv-python
-python your_script.py
+python AEBACC.py
 
 ## Env Setup
 ### System Setup
