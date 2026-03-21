@@ -11,12 +11,6 @@ This project demonstrates:
 pip install ultralytics opencv-python
 python your_script.py
 
-## Results
-<img width="612" height="221" alt="image" src="https://github.com/user-attachments/assets/d83537dd-ff7c-4f24-ad55-6caca3c4b39c" />
-
-<img width="620" height="242" alt="image" src="https://github.com/user-attachments/assets/f8244523-c39c-4064-84ea-ce673e6d5c3c" />
-
-
 ## Env Setup
 ### System Setup
 - Ubuntu 20.04.6 LTS
@@ -41,6 +35,15 @@ subgraph D1[Decision & Planning Phase]
     D -->|TTC < 3s| F[ACC Slow Down]
     D -->|Else| G[Safe]
 end
+```
+## Results
+<img width="612" height="221" alt="image" src="https://github.com/user-attachments/assets/d83537dd-ff7c-4f24-ad55-6caca3c4b39c" />
+
+<img width="620" height="242" alt="image" src="https://github.com/user-attachments/assets/f8244523-c39c-4064-84ea-ce673e6d5c3c" />
+
+### Next Steps
+  - To Make run on Renases V3H Plaform
+  - Add FCW Feature
 
 
 
