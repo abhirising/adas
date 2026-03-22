@@ -43,45 +43,94 @@ end
 
 ## SDV Ready
 <details>
-  <summary>ADAS System Structure</summary>
+  <summary><b>ADAS System Structure</b></summary>
 
   <ul>
-    <li><b>main.py</b> – Pipeline orchestration</li>
-
     <li>
       <details>
-        <summary>config/</summary>
+        <summary><b>main.py</b></summary>
         <ul>
-          <li><b>config_loader.py</b> – OTA config</li>
+          <li>Pipeline orchestration</li>
         </ul>
       </details>
     </li>
 
     <li>
       <details>
-        <summary>services/</summary>
+        <summary><b>config/</b></summary>
         <ul>
-          <li><b>fcw_service.py</b> – Forward Collision Warning</li>
-          <li><b>acc_service.py</b> – Adaptive Cruise Control</li>
-          <li><b>aeb_service.py</b> – Automatic Emergency Braking</li>
+          <li>
+            <details>
+              <summary><b>config_loader.py</b></summary>
+              <ul>
+                <li>OTA config handling</li>
+              </ul>
+            </details>
+          </li>
         </ul>
       </details>
     </li>
 
     <li>
       <details>
-        <summary>perception/</summary>
+        <summary><b>services/</b></summary>
         <ul>
-          <li><b>detector.py</b> – YOLO Detection</li>
+          <li>
+            <details>
+              <summary><b>fcw_service.py</b></summary>
+              <ul>
+                <li>Forward Collision Warning logic</li>
+              </ul>
+            </details>
+          </li>
+          <li>
+            <details>
+              <summary><b>acc_service.py</b></summary>
+              <ul>
+                <li>Adaptive Cruise Control logic</li>
+              </ul>
+            </details>
+          </li>
+          <li>
+            <details>
+              <summary><b>aeb_service.py</b></summary>
+              <ul>
+                <li>Automatic Emergency Braking logic</li>
+              </ul>
+            </details>
+          </li>
         </ul>
       </details>
     </li>
 
     <li>
       <details>
-        <summary>utils/</summary>
+        <summary><b>perception/</b></summary>
         <ul>
-          <li>(helper modules)</li>
+          <li>
+            <details>
+              <summary><b>detector.py</b></summary>
+              <ul>
+                <li>YOLO-based object detection</li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details>
+        <summary><b>utils/</b></summary>
+        <ul>
+          <li>
+            <details>
+              <summary><b>helper modules</b></summary>
+              <ul>
+                <li>Common utilities and shared functions</li>
+              </ul>
+            </details>
+          </li>
         </ul>
       </details>
     </li>
