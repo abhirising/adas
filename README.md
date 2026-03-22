@@ -45,8 +45,8 @@ end
 
 ### ADAS System Structure
 #### main.py – Pipeline orchestration
-####   config/
-  ##### config_loader.py – OTA config
+#### config/
+  - config_loader.py – OTA config
 #### services/
   - fcw_service.py – FCW logic
   - acc_service.py – ACC logic
