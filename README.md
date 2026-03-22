@@ -46,5 +46,17 @@ end
   - monocular approximation to near true-depth estimation
   - Add FCW Feature
 
+adas/
+ ├── main.py                 # pipeline orchestration
+ ├── config/
+ │    └── config_loader.py   # OTA config
+ ├── services/
+ │    ├── fcw_service.py
+ │    ├── acc_service.py
+ │    └── aeb_service.py
+ ├── perception/
+ │    └── detector.py
+ └── utils/
+
 
 
