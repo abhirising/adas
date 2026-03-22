@@ -41,22 +41,60 @@ end
 
 <img width="620" height="242" alt="image" src="https://github.com/user-attachments/assets/f8244523-c39c-4064-84ea-ce673e6d5c3c" />
 
+## SDV Ready
+<details>
+  <summary>ADAS System Structure</summary>
+
+  <ul>
+    <li><b>main.py</b> – Pipeline orchestration</li>
+
+    <li>
+      <details>
+        <summary>config/</summary>
+        <ul>
+          <li><b>config_loader.py</b> – OTA config</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details>
+        <summary>services/</summary>
+        <ul>
+          <li><b>fcw_service.py</b> – Forward Collision Warning</li>
+          <li><b>acc_service.py</b> – Adaptive Cruise Control</li>
+          <li><b>aeb_service.py</b> – Automatic Emergency Braking</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details>
+        <summary>perception/</summary>
+        <ul>
+          <li><b>detector.py</b> – YOLO Detection</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details>
+        <summary>utils/</summary>
+        <ul>
+          <li>(helper modules)</li>
+        </ul>
+      </details>
+    </li>
+
+  </ul>
+</details>
+
 ### Next Steps
   - To Make run on Renases V3H Plaform
   - monocular approximation to near true-depth estimation
   - Add FCW Feature
 
-adas/
- ├── main.py                 # pipeline orchestration
- ├── config/
- │    └── config_loader.py   # OTA config
- ├── services/
- │    ├── fcw_service.py
- │    ├── acc_service.py
- │    └── aeb_service.py
- ├── perception/
- │    └── detector.py
- └── utils/
+
 
 
 
