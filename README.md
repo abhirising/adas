@@ -48,13 +48,13 @@ end
 ####   config/
   ##### config_loader.py – OTA config
 #### services/
-  ##### fcw_service.py – FCW logic
-  ##### acc_service.py – ACC logic
-  ##### aeb_service.py – AEB logic
+  - fcw_service.py – FCW logic
+  - acc_service.py – ACC logic
+  - aeb_service.py – AEB logic
 #### perception/
-  ##### detector.py – YOLO detection
+  - detector.py – YOLO detection
 ### utils/
-  #### helper modules
+  - helper modules
 
 ### Next Steps
   - To Make run on Renases V3H Plaform
