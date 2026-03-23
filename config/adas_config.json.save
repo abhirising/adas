@@ -1,0 +1,54 @@
+8{
+    "sensors": {
+        "camera_front": {
+            "type": "camera",
+            "mode": "image_sequence",
+            "data_path": "training/image_2/",
+            "fps": 10,
+            "intrinsics": {
+                "focal_length": 800,
+                "principal_point": [
+                    620,
+                    187
+                ]
+            }
+        }
+    },
+
+    "perception": {
+        "object_detection": {
+            "model": "yolov8n.pt",
+            "confidence_threshold": 0.4,
+            "classes": [
+                "car",
+                "person",
+                "truck"
+            ]
+        }
+    },
+    "estimation": {
+        "distance": {
+            "method": "monocular",
+            "real_object_height": 1.5
+        },
+        "ttc": {
+            "enabled": true,
+            "threshold": 3.0
+        }
+    },
+    "functions": {
+        "AEB": {
+            "enabled": true,
+            "ttc_trigger": 2.0
+        },
+        "ACC": {
+            "enabled": true,
+            "min_follow_distance": 5
+        }
+    },
+    "output": {
+        "display": true,
+        "save_video": false,
+        "log_path": "logs/run1/"
+    }
+}

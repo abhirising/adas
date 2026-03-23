@@ -2,6 +2,8 @@ import cv2
 import time
 import glob
 import requests
+import json
+import os
 from ultralytics import YOLO
 
 # ----------------------------
@@ -9,9 +11,16 @@ from ultralytics import YOLO
 # ----------------------------
 def load_config():
     try:
-        url = "https://your-server.com/adas_config.json"  # replace with real URL
-        return requests.get(url, timeout=2).json()
-    except:
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.join(BASE_DIR, "config", "adas_config.json")
+
+        print(path)
+
+        with open(path, "r") as f:
+            return json.load(f)
+
+    except Exception as e:
+        print("Error:", e)
         print("Using default config (OTA failed)")
         return {
             "VERSION": "v1.0",
@@ -23,7 +32,7 @@ def load_config():
         }
 
 config = load_config()
-print("Running ADAS Version:", config["VERSION"])
+# print("Running ADAS Version:", config["VERSION"])
 
 # ----------------------------
 # SERVICES
