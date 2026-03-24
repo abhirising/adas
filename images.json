@@ -1,0 +1,20 @@
+{
+
+  "model": {
+
+    "name": "yolov8n.pt",
+
+    "confidence_threshold": 0.4
+
+  },
+  "camera": {
+    "focal_length": 800,
+    "real_height": 1.5
+  },
+  "paths": {
+
+    "image_folder": "../../kitti/training/image_2/*.png"
+
+  }
+
+}

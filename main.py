@@ -2,17 +2,31 @@ import cv2
 import time
 from ultralytics import YOLO
 import glob
+import json
 import sys
 #from parking import ParkingDetector
 
 # ----------------------------
 # CONFIG
 # ----------------------------
-MODEL_NAME = "yolov8n.pt"
-FOCAL_LENGTH = 800       # approximate camera focal length
-REAL_HEIGHT = 1.5        # average vehicle height (meters)
+#MODEL_NAME = "yolov8n.pt"
+#FOCAL_LENGTH = 800       # approximate camera focal length
+#REAL_HEIGHT = 1.5        # average vehicle height (meters)
 
-image_files = sorted(glob.glob("../kitti/training/image_2/*.png"))
+#image_files = sorted(glob.glob("../../kitti/training/image_2/*.png"))
+
+# ----------------------------
+ # Load Image Path from JSON
+# ----------------------------
+with open("images.json", "r") as f:
+    config = json.load(f)
+image_folder = config["paths"]["image_folder"]
+image_files = sorted(glob.glob(image_folder))
+
+MODEL_NAME = config["model"]["name"]
+FOCAL_LENGTH = config["camera"]["focal_length"]
+REAL_HEIGHT = config["camera"]["real_height"]
+
 
 # ----------------------------
 # Initialize
@@ -139,7 +153,7 @@ while i < len(image_files):
         prev_dist = dist
         ttc = compute_ttc(dist, rel_speed)
         status, color = decide(ttc)
-    
+
         print(f"Distance: {dist:.2f} m | RelSpeed: {rel_speed:.2f} m/s | TTC: {ttc:.2f} s | Status: {status}")
     
         x1, y1, x2, y2 = lead_box
