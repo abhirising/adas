@@ -58,10 +58,9 @@ end
 
 ### Next Steps
   -  Enable Service-Oriented Architecture (SOA)
+  -  Enable Data-Centric Architecture
+  -  Implement Middleware / Communication Layer
   -  To Make run on Renases V3H Plaform
-  -  monocular approximation to near true-depth estimation
-  -  Add FCW Feature
-
 
 
 <img width="342" height="392" alt="image" src="https://github.com/user-attachments/assets/fb794a2d-2b4b-4a0e-ac47-c9ee940001f2" />
