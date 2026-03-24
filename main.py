@@ -1,179 +1,170 @@
 import cv2
 import time
-import glob
-import requests
-import json
-import os
 from ultralytics import YOLO
+import glob
+import sys
+#from parking import ParkingDetector
 
 # ----------------------------
-# OTA CONFIG LOAD
+# CONFIG
 # ----------------------------
-def load_config():
-    try:
-        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-        path = os.path.join(BASE_DIR, "config", "adas_config.json")
+MODEL_NAME = "yolov8n.pt"
+FOCAL_LENGTH = 800       # approximate camera focal length
+REAL_HEIGHT = 1.5        # average vehicle height (meters)
 
-        print(path)
-
-        with open(path, "r") as f:
-            return json.load(f)
-
-    except Exception as e:
-        print("Error:", e)
-        print("Using default config (OTA failed)")
-        return {
-            "VERSION": "v1.0",
-            "FEATURES": {"FCW": True, "ACC": True, "AEB": True},
-            "ACC": {"time_gap": 2.0},
-            "AEB": {"ttc_critical": 1.2},
-            "FCW": {"ttc_warning": 2.5},
-            "MODEL": {"path": "yolov8n.pt"}
-        }
-
-config = load_config()
-# print("Running ADAS Version:", config["VERSION"])
+image_files = sorted(glob.glob("../kitti/training/image_2/*.png"))
 
 # ----------------------------
-# SERVICES
+# Initialize
 # ----------------------------
-class FCWService:
-    def __init__(self, cfg):
-        self.ttc_warning = cfg["ttc_warning"]
+model = YOLO(MODEL_NAME)
+class_names = model.names
 
-    def evaluate(self, distance, rel_speed):
-        if rel_speed <= 0:
-            return {"status": "SAFE", "ttc": float('inf')}
-
-        ttc = distance / rel_speed
-
-        if ttc < self.ttc_warning:
-            return {"status": "WARNING", "ttc": ttc}
-        return {"status": "SAFE", "ttc": ttc}
-
-
-class ACCService:
-    def __init__(self, cfg):
-        self.time_gap = cfg["time_gap"]
-
-    def evaluate(self, ego_speed, distance):
-        safe_dist = ego_speed * self.time_gap
-
-        if distance < safe_dist:
-            return "SLOW_DOWN"
-        return "MAINTAIN"
-
-
-class AEBService:
-    def __init__(self, cfg):
-        self.ttc_critical = cfg["ttc_critical"]
-
-    def evaluate(self, distance, rel_speed):
-        if rel_speed <= 0:
-            return {"brake": False}
-
-        ttc = distance / rel_speed
-
-        return {
-            "brake": ttc < self.ttc_critical,
-            "ttc": ttc
-        }
-
-# ----------------------------
-# INIT
-# ----------------------------
-model = YOLO(config["MODEL"]["path"])
-
-FOCAL_LENGTH = 800
-REAL_HEIGHT = 1.5
-
-image_files = sorted(glob.glob("training/image_2/*.png"))
-
-fcw = FCWService(config["FCW"])
-acc = ACCService(config["ACC"])
-aeb = AEBService(config["AEB"])
-
-prev_distance = None
+prev_dist = None
 prev_time = time.time()
 
-ego_speed = 10  # m/s (dummy)
+VEHICLE_CLASSES = [2, 3, 5, 7]  # car, motorcycle, bus, truck
 
 # ----------------------------
-# MAIN LOOP
+# Helper Functions
 # ----------------------------
-for img_path in image_files:
+def select_lead_vehicle(boxes, frame_width):
+    center_x = frame_width // 2
+    best = None
+    min_offset = 1e9
+    for box in boxes:
+        x1, y1, x2, y2 = box
+        obj_center = (x1 + x2) // 2
+        offset = abs(obj_center - center_x)
+        if offset < min_offset:
+            min_offset = offset
+            best = box
+    return best
 
+def estimate_distance(box):
+    x1, y1, x2, y2 = box
+    h = y2 - y1
+    if h <= 0:
+        return None
+    return (REAL_HEIGHT * FOCAL_LENGTH) / h
+
+def compute_ttc(dist, rel_speed):
+    if rel_speed <= 0:
+        return float("inf")
+    return dist / rel_speed
+
+def decide(ttc):
+    if ttc < 1.5:
+        return "AEB BRAKE!", (0, 0, 255)
+    elif ttc < 3:
+        return "ACC SLOW DOWN", (0, 165, 255)
+    else:
+        return "SAFE", (0, 255, 0)
+
+
+def fcw_decision(ttc):
+    if ttc < 1.0:
+        return "HIGH RISK", (0, 0, 255)
+    elif ttc < 2.0:
+        return "WARNING", (0, 165, 255)
+    elif ttc < 3.0:
+        return "CAUTION", (0, 255, 255)
+    else:
+        return "SAFE", (0, 255, 0)
+
+# ----------------------------
+# Main Loop (User Controlled)
+# ----------------------------
+cv2.imshow("ACC / AEB Demo", cv2.WINDOW_NORMAL)
+i = 0
+while i < len(image_files):
+    img_path = image_files[i]
     frame = cv2.imread(img_path)
     if frame is None:
+        i += 1
         continue
 
-    results = model(frame)[0]
+    frame_h, frame_w = frame.shape[:2]
+    results = model(frame, verbose=False)
+    boxes = []
+    detection_counts = {}  # initialize per frame
+    print("imshow")
 
-    current_time = time.time()
-    delta_time = current_time - prev_time
+    # ----------------------------
+    # Detection loop
+    # ----------------------------
+    for r in results:
+        for b in r.boxes:
+            cls = int(b.cls[0])
+            label = class_names[cls]
 
-    for box in results.boxes:
+            # Get bounding box coordinates
+            x1, y1, x2, y2 = map(int, b.xyxy[0])
 
-        cls = int(box.cls[0])
-        if cls != 2:  # car class (COCO)
-            continue
+            # Count detections
+            detection_counts[label] = detection_counts.get(label, 0) + 1
 
-        x1, y1, x2, y2 = map(int, box.xyxy[0])
-        bbox_height = y2 - y1
+            # Draw bounding box
+            cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 255, 255), 1)
 
-        if bbox_height <= 0:
-            continue
+            # Draw label above box
+            cv2.putText(frame, label, (x1, y1 - 30),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
 
-        # ----------------------------
-        # DISTANCE
-        # ----------------------------
-        distance = (FOCAL_LENGTH * REAL_HEIGHT) / bbox_height
+            # Filter only vehicle classes for ACC/AEB
+            if cls in VEHICLE_CLASSES:
+                boxes.append((x1, y1, x2, y2))
 
-        # ----------------------------
-        # RELATIVE SPEED
-        # ----------------------------
-        if prev_distance is not None and delta_time > 0:
-            rel_speed = (prev_distance - distance) / delta_time
+    # Print object counts per frame
+    print("Detections:", detection_counts)
+
+    # ----------------------------
+    # ACC / AEB logic
+    # ----------------------------
+    # Situation Interpretation -->  select_lead_vehicle + estimate_distance + compute_ttc
+    # Decision Making   & Planning       -->  decide
+    lead_box = select_lead_vehicle(boxes, frame_w)
+
+    if lead_box is not None:
+        dist = estimate_distance(lead_box)
+        curr_time = time.time()
+        dt = curr_time - prev_time
+        prev_time = curr_time
+    
+        if prev_dist is not None and dist is not None and dt > 0:
+            rel_speed = (prev_dist - dist) / dt
         else:
             rel_speed = 0
+    
+        prev_dist = dist
+        ttc = compute_ttc(dist, rel_speed)
+        status, color = decide(ttc)
+    
+        print(f"Distance: {dist:.2f} m | RelSpeed: {rel_speed:.2f} m/s | TTC: {ttc:.2f} s | Status: {status}")
+    
+        x1, y1, x2, y2 = lead_box
+        cv2.rectangle(frame, (x1, y1), (x2, y2), color, 3)
+    
+        info = f"D:{dist:.1f}m TTC:{ttc:.1f}s {status}"
+        cv2.putText(frame, info, (x1, y1 - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
 
-        prev_distance = distance
-        prev_time = current_time
+    # ----------------------------
+    # Show frame
+    # ----------------------------
+    cv2.imshow("ACC / AEB Demo", frame)
+    key = cv2.waitKey(0) & 0xFF   # Mask with 0xFF for Ubuntu/Linux
+    
+    if key == ord('n'):   # next image
 
-        label = f"{distance:.1f}m"
+        i += 1
 
-        # ----------------------------
-        # FCW
-        # ----------------------------
-        if config["FEATURES"]["FCW"]:
-            fcw_out = fcw.evaluate(distance, rel_speed)
-            label += f" | FCW: {fcw_out['status']}"
+    elif key == ord('q'): # quit
 
-        # ----------------------------
-        # ACC
-        # ----------------------------
-        if config["FEATURES"]["ACC"]:
-            acc_out = acc.evaluate(ego_speed, distance)
-            label += f" | ACC: {acc_out}"
-
-        # ----------------------------
-        # AEB
-        # ----------------------------
-        if config["FEATURES"]["AEB"]:
-            aeb_out = aeb.evaluate(distance, rel_speed)
-            if aeb_out["brake"]:
-                label += " | AEB: BRAKE"
-
-        # ----------------------------
-        # DRAW
-        # ----------------------------
-        cv2.rectangle(frame, (x1, y1), (x2, y2), (0,255,0), 2)
-        cv2.putText(frame, label, (x1, y1-10),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 2)
-
-    cv2.imshow("ADAS SDV Demo", frame)
-
-    if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+
+
+
+# Cleanup
 
 cv2.destroyAllWindows()
