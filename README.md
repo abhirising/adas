@@ -57,9 +57,10 @@ end
   - helper modules
 
 ### Next Steps
-  - To Make run on Renases V3H Plaform
-  - monocular approximation to near true-depth estimation
-  - Add FCW Feature
+  -  Enable Service-Oriented Architecture (SOA)
+  -  To Make run on Renases V3H Plaform
+  -  monocular approximation to near true-depth estimation
+  -  Add FCW Feature
 
 
 
