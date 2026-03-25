@@ -14,6 +14,7 @@ python AEBACC.py
 ## Env Setup
 ### System Setup
 - Ubuntu 20.04.6 LTS
+- scp CARLA_0.10.0.tar.gz uid39463@10.103.186.189:/home/uid39463/
 ### Conda Installation
 - Download Miniconda -->         wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 - Install -->                  bash Miniconda3-latest-Linux-x86_64.sh
