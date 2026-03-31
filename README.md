@@ -42,26 +42,23 @@ end
 
 <img width="620" height="242" alt="image" src="https://github.com/user-attachments/assets/f8244523-c39c-4064-84ea-ce673e6d5c3c" />
 
-## SDV Ready
+## SDV Evolution Roadmap
 
-### ADAS System Structure
-#### main.py – Pipeline orchestration
-#### config/
-  - config_loader.py – OTA config
-#### services/
-  - fcw_service.py – FCW logic
-  - acc_service.py – ACC logic
-  - aeb_service.py – AEB logic
-#### perception/
-  - detector.py – YOLO detection
-### utils/
-  - helper modules
+### Phase 1 (Current)
+- Monolithic execution with modular services
 
-### Next Steps
-  -  Enable Service-Oriented Architecture (SOA)
-  -  Enable Data-Centric Architecture
-  -  Implement Middleware / Communication Layer
-  -  To Make run on Renases V3H Plaform
+### Phase 2
+- Introduce middleware (ROS2 / DDS / SOME-IP)
+- Convert services into independent processes
+
+### Phase 3
+- Deploy on central compute
+- Enable inter-service communication
+
+### Phase 4
+- Cloud integration
+- OTA updates for decision logic
+- Data-driven continuous improvement
 
 
 <img width="342" height="392" alt="image" src="https://github.com/user-attachments/assets/fb794a2d-2b4b-4a0e-ac47-c9ee940001f2" />
