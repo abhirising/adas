@@ -1,4 +1,4 @@
-# ADAS 1V Solution – SDV Oriented
+# SDV-Aligned ADAS Solution
 
 ## Overview
 
