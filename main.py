@@ -6,6 +6,9 @@ import json
 import sys
 #from parking import ParkingDetector
 
+from aeb_services import decide_aeb   # <-- SERVICE IMPORT
+from acc_services import decide_acc
+
 # ----------------------------
 # CONFIG
 # ----------------------------
@@ -22,6 +25,9 @@ with open("images.json", "r") as f:
     config = json.load(f)
 image_folder = config["paths"]["image_folder"]
 image_files = sorted(glob.glob(image_folder))
+
+
+acc_cfg = config["acc_cfg"]
 
 MODEL_NAME = config["model"]["name"]
 FOCAL_LENGTH = config["camera"]["focal_length"]
@@ -62,18 +68,18 @@ def estimate_distance(box):
         return None
     return (REAL_HEIGHT * FOCAL_LENGTH) / h
 
-def compute_ttc(dist, rel_speed):
-    if rel_speed <= 0:
-        return float("inf")
-    return dist / rel_speed
+# def compute_ttc(dist, rel_speed):
+#     if rel_speed <= 0:
+#         return float("inf")
+#     return dist / rel_speed
 
-def decide(ttc):
-    if ttc < 1.5:
-        return "AEB BRAKE!", (0, 0, 255)
-    elif ttc < 3:
-        return "ACC SLOW DOWN", (0, 165, 255)
-    else:
-        return "SAFE", (0, 255, 0)
+# def decide(ttc):
+#     if ttc < 1.5:
+#         return "AEB BRAKE!", (0, 0, 255)
+#     elif ttc < 3:
+#         return "ACC SLOW DOWN", (0, 165, 255)
+#     else:
+#         return "SAFE", (0, 255, 0)
 
 
 def fcw_decision(ttc):
@@ -121,7 +127,7 @@ while i < len(image_files):
             # Draw bounding box
             cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 255, 255), 1)
 
-            # Draw label above box
+            # Draw label above boxn
             cv2.putText(frame, label, (x1, y1 - 30),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
 
@@ -151,15 +157,27 @@ while i < len(image_files):
             rel_speed = 0
     
         prev_dist = dist
-        ttc = compute_ttc(dist, rel_speed)
-        status, color = decide(ttc)
+        # ttc = compute_ttc(dist, rel_speed)
+        # status, color = decide(ttc)
 
-        print(f"Distance: {dist:.2f} m | RelSpeed: {rel_speed:.2f} m/s | TTC: {ttc:.2f} s | Status: {status}")
+        aeb_decision = decide_aeb(dist, rel_speed)
+        acc_decision = decide_acc(dist, rel_speed, acc_cfg["ego_speed"], acc_cfg)
+
+        aeb_ttc = aeb_decision["ttc"]
+       # acc_ttc = acc_decision["ttc"]
+        aeb_status = aeb_decision["status"]
+        color = aeb_decision["color"]
+
+        acc_status = acc_decision["status"]
+
+        print(f"Distance: {dist:.2f} m | RelSpeed: {rel_speed:.2f} m/s | TTC: {aeb_ttc:.2f} s | Status: {aeb_status}")
+        print(f"Distance: {dist:.2f} m | RelSpeed: {rel_speed:.2f} m/s | TTC: {aeb_ttc:.2f} s | Status: {acc_status}")
+
     
         x1, y1, x2, y2 = lead_box
         cv2.rectangle(frame, (x1, y1), (x2, y2), color, 3)
     
-        info = f"D:{dist:.1f}m TTC:{ttc:.1f}s {status}"
+        info = f"D:{dist:.1f}m TTC:{aeb_ttc:.1f}s {aeb_status}"
         cv2.putText(frame, info, (x1, y1 - 10),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
 
