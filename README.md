@@ -1,11 +1,19 @@
-# ADAS 1V Solution AEB/ACC Demo
+# ADAS 1V Solution – SDV Oriented
 
 ## Overview
-This project demonstrates:
-- YOLOv8 object detection : Currently the model can detect 80 types of objects, with detection time = 4.9 ms
-- Distance estimation using bounding boxes
-- Time-to-Collision (TTC)
-- AEB and ACC decision logic
+
+This project demonstrates an **SDV-aligned ADAS architecture**, where perception and decision-making are implemented as **decoupled, reusable services**.
+
+The solution showcases:
+
+- Vision-based perception using YOLOv8
+- Real-time decision services (FCW, ACC, AEB)
+- Configurable and modular pipeline
+- Foundation for Service-Oriented Architecture (SOA)
+
+This is not just a demo—it is a **prototype of how ADAS functions can be structured in a Software-Defined Vehicle (SDV)**.
+
+---
 
 ## Run
 pip install ultralytics opencv-python
