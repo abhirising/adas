@@ -15,10 +15,6 @@ This is not just a demo—it is a **prototype of how ADAS functions can be struc
 
 ---
 
-## Run
-pip install ultralytics opencv-python
-python AEBACC.py
-
 ## Env Setup
 ### System Setup
 - Ubuntu 20.04.6 LTS
